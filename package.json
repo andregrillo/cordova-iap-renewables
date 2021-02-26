@@ -1,0 +1,44 @@
+{
+  "name": "cordova-iap-renewables",
+  "version": "1.0.0",
+  "description": "Cordova Purchase plugin for iOS)",
+  "cordova": {
+    "id": "cordova-iap-renewables",
+    "platforms": [
+      "ios"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/andregrillo/cordova-iap-renewables.git"
+  },
+  "keywords": [
+    "ecosystem:cordova",
+    "cordova-ios",
+    "cordova",
+    "purchase",
+    "storekit",
+    "ios",
+    "appstore"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/andregrillo/cordova-iap-renewables"
+  },
+  "homepage": "https://github.com/andregrillo/cordova-iap-renewables",
+  "devDependencies": {
+    "acorn": "^6.3.0",
+    "babel-eslint": "^10.0.3",
+    "coveralls": "^3.0.6",
+    "eslint": "^5.16.0",
+    "eslint-config-defaults": "^9.0.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-react": "^7.14.3",
+    "istanbul": "^0.4.5",
+    "jshint": "^2.10.2",
+    "mocha": "^6.2.0",
+    "preprocessor": "^1.4.0",
+    "uglify-js": "^3.6.0"
+  },
+  "types": "./src/js/index.d.ts"
+}
