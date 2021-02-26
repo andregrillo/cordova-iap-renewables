@@ -129,7 +129,7 @@ useful occasions, like when a subscription expires.
 Right after you registered your products, nothing much is known about them
 except their `id`, `type` and an optional `alias`.
 
-When you perform the initial [`refresh()`](#refresh) call, the store's server will
+When you perform the initial `refresh()` call, the store's server will
 be contacted to load informations about the registered products: human
 readable `title` and `description`, `price`, etc.
 
@@ -202,13 +202,13 @@ happens to the product. When the view is hidden, we stop listening to changes
 
 #### Initiate a purchase
 
-Purchases are initiated using the [`store.order(product)`](#order) method.
+Purchases are initiated using the `store.order(product)` method.
 
 The store will manage the internal purchase flow that'll end:
 
- - with an `approved` [event](#events). The product enters the `APPROVED` state.
- - with a `cancelled` [event](#events). The product gets back to the `VALID` state.
- - with an `error` [event](#events). The product gets back to the `VALID` state.
+ - with an `approved` event. The product enters the `APPROVED` state.
+ - with a `cancelled` event. The product gets back to the `VALID` state.
+ - with an `error` event. The product gets back to the `VALID` state.
 
 See [product life-cycle](#life-cycle) for details about product states.
 
@@ -239,7 +239,7 @@ The code right above will start the purchase process and will trigger the "when 
 If your app wasn't able to deliver the content, `product.finish()` won't be called.
 
 The `approved` event will be re-triggered the next time you
-call [`store.refresh()`](#refresh), which can very well be the next time
+call `store.refresh()`, which can very well be the next time
 the application starts. Pending transactions are persistant.
 
 #### simple case
@@ -250,8 +250,6 @@ store.when("12months-AutoRenew").approved(function(product) {
     product.finish();
 });
 ```
-
-NOTE: the "product" query will match any purchases (see [here](#queries) to learn more details about queries).
 
 ### Subscriptions
 
@@ -374,7 +372,7 @@ Products object have the following fields and methods.
 ### *store.Product* public attributes
 
  - `product.id` - Identifier of the product on the store
- - `product.alias` - Alias that can be used for more explicit [queries](#queries)
+ - `product.alias` - Alias that can be used for more explicit queries
  - `product.type` - Family of product, should be one of the defined [product types](#product-types).
  - `product.group` - Name of the group your subscription product is a member of (default to `"default"`). If you don't set anything, all subscription will be members of the same group.
  - `product.state` - Current state the product is in (see [life-cycle](#life-cycle) below). Should be one of the defined [product states](#product-states)
@@ -395,7 +393,7 @@ Products object have the following fields and methods.
  - `product.introPricePeriod` - Duration the introductory price is available (in period-unit)
  - `product.introPricePeriodUnit` - Period for the introductory price ("Day", "Week", "Month" or "Year")
  - `product.introPricePaymentMode` - Payment mode for the introductory price ("PayAsYouGo", "UpFront", or "FreeTrial")
- - `product.ineligibleForIntroPrice` - True when a trial or introductory price has been applied to a subscription. Only available after [receipt validation](#validator). Available only on iOS
+ - `product.ineligibleForIntroPrice` - True when a trial or introductory price has been applied to a subscription. Only available after receipt validation. Available only on iOS
 - `product.discounts` - Array of discounts available for the product. Each discount exposes the following fields:
    - `id` - The discount identifier
    - `price` - Localized price, with currency symbol
@@ -407,7 +405,7 @@ Products object have the following fields and methods.
  - `product.downloading` - Product is downloading non-consumable content
  - `product.downloaded` - Non-consumable content has been successfully downloaded for this product
  - `product.additionalData` - additional data possibly required for product purchase
- - `product.transaction` - Latest transaction data for this product (see [transactions](#transactions)).
+ - `product.transaction` - Latest transaction data for this product (see transactions).
  - `product.expiryDate` - Latest known expiry date for a subscription (a javascript Date)
  - `product.lastRenewalDate` - Latest date a subscription was renewed (a javascript Date)
  - `product.billingPeriod` - Duration of the billing period for a subscription, in the units specified by the `billingPeriodUnit` property. (_not available on iOS < 11.2_)
@@ -466,7 +464,7 @@ Find below a diagram of the different states a product can pass by.
 
 #### states definitions
 
- - `REGISTERED`: right after being declared to the store using [`store.register()`](#register)
+ - `REGISTERED`: right after being declared to the store using `store.register()`
  - `INVALID`: the server didn't recognize this product, it cannot be used.
  - `VALID`: the server sent extra information about the product (`title`, `price` and such).
  - `REQUESTED`: order (purchase) requested by the user
@@ -478,8 +476,6 @@ Find below a diagram of the different states a product can pass by.
 #### state changes
 
 Each time the product changes state, the appropriate event is triggered.
-
-Learn more about events [here](#events) and about listening to events [here](#when).
 
 
 ## <a name="errors"></a>*store.Error* object
