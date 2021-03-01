@@ -381,7 +381,7 @@ Products object have the following fields and methods.
  - `product.priceMicros` - Price in micro-units (divide by 1000000 to get numeric price)
  - `product.price` - Localized price, with currency symbol
  - `product.currency` - Currency code (optionaly)
- - `product.countryCode` - Country code. Available only on iOS
+ - `product.countryCode` - Country code.
  - `product.loaded` - Product has been loaded from server, however it can still be either `valid` or not
  - `product.valid` - Product has been loaded and is a valid product
    - when product definitions can't be loaded from the store, you should display instead a warning like: "You cannot make purchases at this stage. Try again in a moment. Make sure you didn't enable In-App-Purchases restrictions on your phone."
@@ -393,7 +393,7 @@ Products object have the following fields and methods.
  - `product.introPricePeriod` - Duration the introductory price is available (in period-unit)
  - `product.introPricePeriodUnit` - Period for the introductory price ("Day", "Week", "Month" or "Year")
  - `product.introPricePaymentMode` - Payment mode for the introductory price ("PayAsYouGo", "UpFront", or "FreeTrial")
- - `product.ineligibleForIntroPrice` - True when a trial or introductory price has been applied to a subscription. Only available after receipt validation. Available only on iOS
+ - `product.ineligibleForIntroPrice` - True when a trial or introductory price has been applied to a subscription. Only available after receipt validation.
 - `product.discounts` - Array of discounts available for the product. Each discount exposes the following fields:
    - `id` - The discount identifier
    - `price` - Localized price, with currency symbol
