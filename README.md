@@ -263,6 +263,176 @@ store.when("12months-AutoRenew").updated(function(product) {
 });
 ```
 
+### Receipt validation
+
+When a purchase has been approved by the store, it's enriched with
+[transaction](#transactions) information (`product.transaction` attribute).
+
+To verfify a purchase you'll have to do three things:
+
+ - configure the [validator](#validator).
+ - call [`product.verify()`](#verify) from the `approved` event,
+   before finishing the transaction.
+ - finish the transaction when transaction is `verified`.
+
+#### example using a validation URL
+
+```js
+store.validator = "http://API_URL";
+
+store.when("product1").approved(function(product) {
+    product.verify();
+});
+
+store.when("product1").verified(function(product) {
+    product.finish();
+});
+```
+
+For an example using a validation callback instead, see the documentation of [the validator method](#validator).
+
+### Subscriptions
+
+For subscription, you should implement remote [receipt validation](#receipt-validation).
+
+If the validator returns a `store.PURCHASE_EXPIRED` error code, the subscription will
+automatically loose its `owned` status.
+
+Typically, you'll enable and disable access to your content this way.
+
+
+#### <a name="verify"></a>`product.verify()` ##
+
+Initiate purchase validation as defined by the [`store.validator`](#validator).
+
+##### return value
+A Promise with the following methods:
+
+ - `done(function(product){})`
+   - called whether verification failed or succeeded.
+ - `expired(function(product){})`
+   - called if the purchase expired.
+ - `success(function(product, purchaseData){})`
+   - called if the purchase is valid and verified.
+   - `purchaseData` is the device dependent transaction details
+     returned by the validator, which you can most probably ignore.
+ - `error(function(err){})`
+   - validation failed, either because of expiry or communication
+     failure.
+   - `err` is a [store.Error object](#errors), with a code expected to be
+     `store.ERR_PAYMENT_EXPIRED` or `store.ERR_VERIFICATION_FAILED`.
+
+
+## <a name="validator"></a> *store.validator*
+Set this attribute to either:
+
+ - the URL of your purchase validation service ([example](#validation-url-example))
+ - a custom validation callback method ([example](#validation-callback-example))
+
+#### validation URL example
+
+```js
+store.validator = "https://API_URL";
+```
+
+* **URL**
+
+  `/your-check-purchase-path`
+
+* **Method:**
+
+  `POST`
+
+* **Data Params**
+
+  The **product** object will be added as a json string.
+
+  Example body:
+
+  ```js
+  {
+    additionalData : null
+    alias : "monthly1"
+    currency : "USD"
+    description : "Monthly subscription"
+    id : "subscription.monthly"
+    loaded : true
+    price : "$12.99"
+    priceMicros : 12990000
+    state : "approved"
+    title : "The Monthly Subscription Title"
+    transaction : { // Additional fields based on store type (see "transactions" below)  }
+    type : "paid subscription"
+    valid : true
+  }
+  ```
+
+  The `transaction` parameter is an object, see [transactions](#transactions).
+
+* **Success Response:**
+  * **Code:** 200 <br />
+    **Content:**
+    ```
+    {
+        ok : true,
+        data : {
+            transaction : { // Additional fields based on Apple App Store (see "transactions" below) }
+        }
+    }
+    ```
+    The `transaction` parameter is an object, see [transactions](#transactions).  Optional.  Will replace the product's transaction field with this.
+
+* **Error Response:**
+  * **Code:** 200 (for [validation error codes](#validation-error-codes))<br />
+    **Content:**
+    ```
+    {
+        ok : false,
+        data : {
+            code : 6778003 // Int. Corresponds to a validation error code, click above for options.
+        }
+        error : { // (optional)
+            message : "The subscription is expired."
+        }
+    }
+    ```
+  OR
+  * **Code:** non-200 <br />
+  The response's *status* and *statusText* will be displayed in an formatted error string.
+
+
+
+#### validation callback example
+
+```js
+store.validator = function(product, callback) {
+
+    // Here, you will typically want to contact your own webservice
+    // where you check transaction receipts with Apple.
+    callback(true, { ... transaction details ... }); // success!
+    callback(true, { transaction: "your custom details" }); // success!
+        // your custom details will be merged into the product's transaction field
+
+    // OR
+    callback(false, {
+        code: store.PURCHASE_EXPIRED, // **Validation error code
+        error: {
+            message: "XYZ"
+        }
+    });
+
+    // OR
+    callback(false, "Impossible to proceed with validation");
+
+    // Here, you will typically want to contact your own webservice
+    // where you check transaction receipts with Apple
+});
+```
+
+** Validation error codes are [documented here](#validation-error-codes).
+
+
+
 # <a name="store"></a>*store* object ##
 
 `store` is the global object exported by the purchase plugin.
@@ -350,7 +520,7 @@ See the [logging levels](#logging-levels) constants.
     store.INFO    = 3;
     store.DEBUG   = 4;
 
-### validation error codes
+<a name="validation-error-codes"></a>### validation error codes
 
     store.INVALID_PAYLOAD   = 6778001;
     store.CONNECTION_FAILED = 6778002;
