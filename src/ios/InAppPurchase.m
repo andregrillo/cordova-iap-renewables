@@ -67,6 +67,8 @@ static BOOL g_downloadHostedContent = YES;
 #define ERR_INVALID_SIGNATURE                 (ERROR_CODES_BASE + 31)
 #define ERR_MISSING_OFFER_PARAMS              (ERROR_CODES_BASE + 32)
 
+NSString* transactionDate;
+
 static NSInteger jsErrorCode(NSInteger storeKitErrorCode) {
     switch (storeKitErrorCode) {
         case SKErrorUnknown:
@@ -525,6 +527,13 @@ static NSString *priceLocaleCurrencyCode(NSLocale *priceLocale) {
             case SKPaymentTransactionStateRestored:
                 state = @"PaymentTransactionStateRestored";
                 transactionIdentifier = transaction.transactionIdentifier;
+
+                NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"GMT"];
+                [dateFormatter setTimeZone:timeZone];
+                [dateFormatter setDateFormat:@"dd-MM-yyyy HH:mm:ss"];
+                transactionDate = [dateFormatter stringFromDate:transaction.transactionDate];
+
                 if (!transactionIdentifier)
                     transactionIdentifier = transaction.originalTransaction.transactionIdentifier;
 #if TARGET_OS_IPHONE
@@ -558,6 +567,7 @@ static NSString *priceLocaleCurrencyCode(NSLocale *priceLocale) {
             NILABLE(productId),
             NILABLE(transactionReceipt),
             NILABLE(originalTransactionIdentifier),
+            NILABLE(transactionDate),
             nil];
 
         if (g_initialized) {

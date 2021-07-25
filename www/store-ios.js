@@ -1,4 +1,5 @@
 //! # iOS Implementation
+var transactionArray = new Array();
 //!
 //! The implementation of the unified API is a small layer
 //! built on top of the legacy "PhoneGap-InAppPurchase-iOS" plugin.
@@ -548,6 +549,9 @@ store.Product = function(options) {
 
     ///  - `product.transaction` - Latest transaction data for this product (see [transactions](#transactions)).
     this.transaction = null;
+
+    this.expiryDate = transactionArray;
+    this.transactionDate = transactionArray;
 
     ///  - `product.expiryDate` - Latest known expiry date for a subscription (a javascript Date)
     ///  - `product.lastRenewalDate` - Latest date a subscription was renewed (a javascript Date)
@@ -3294,7 +3298,10 @@ InAppPurchase.prototype.processPendingUpdates = function() {
 //
 // Note that it may eventually be called before initialization... unfortunately.
 // In this case, we'll just keep pending updates in a list for later processing.
-InAppPurchase.prototype.updatedTransactionCallback = function (state, errorCode, errorText, transactionIdentifier, productId, transactionReceipt, originalTransactionIdentifier) {
+InAppPurchase.prototype.updatedTransactionCallback = function (state, errorCode, errorText, transactionIdentifier, productId, transactionReceipt, originalTransactionIdentifier, date) {
+
+    transactionDate = date;
+    transactionArray.push(date);
 
     if (!initialized) {
         var args = Array.prototype.slice.call(arguments);
