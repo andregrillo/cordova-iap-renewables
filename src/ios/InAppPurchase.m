@@ -524,7 +524,7 @@ static NSString *priceLocaleCurrencyCode(NSLocale *priceLocale) {
                 }
                 break;
 
-            case SKPaymentTransactionStateRestored:
+            case SKPaymentTransactionStateRestored: {
                 state = @"PaymentTransactionStateRestored";
                 transactionIdentifier = transaction.transactionIdentifier;
 
@@ -546,7 +546,7 @@ static NSString *priceLocaleCurrencyCode(NSLocale *priceLocale) {
                 if (!productId)
                     productId = transaction.originalTransaction.payment.productIdentifier;
                 break;
-
+                }
             default:
                 DLog(@"paymentQueue:updatedTransactions: Invalid state");
                 continue;
